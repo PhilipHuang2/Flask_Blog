@@ -1,3 +1,4 @@
+from distutils.command.config import config
 from pickle import FALSE, NONE
 from flask import Flask
 from flask import render_template, url_for, request, flash, redirect, session
@@ -9,9 +10,10 @@ from flask_admin.contrib.sqla import ModelView
 import requests
 import re
 import hasher
+from Security.config import weather_secret
 
 def get_weather_data(city):
-     url = f'http://api.openweathermap.org/data/2.5/weather?q={ city }&units=imperial&appid=bd16f5ef224423a097f3ef14062bba6a'
+     url = f'http://api.openweathermap.org/data/2.5/weather?q={ city }&units=imperial&appid=' + weather_secret
      r = requests.get(url).json()
      return r
 
