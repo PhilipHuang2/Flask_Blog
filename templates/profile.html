@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center">{% block title %} {{ user.name }}'s Profile {% endblock %}</h1>
+<div class="row g-5">
+    <div class="col-md-8">
+        {% for post in posts %}
+        <a href = "{{ url_for('post', post_id=post['id']) }}">
+                <h2>{{ post['title'] }}</h2>
+        </a>
+        <span class="badge badge-primary">{{post['created'] }}</span>
+        <a href="{{ url_for('edit', id=post['id']) }}">
+            <span class="badge badge-warning">Edit</span>
+        </a>
+        <hr>
+    {% endfor %}
+    </div>
+    <div class="col-md-4">
+        <a href="#collapseWeather" data-toggle="collapse" class="btn btn-primary" role="button" aria-expanded="true" aria-controls="collapseWeather">
+            Weather Widget
+        </a>
+        <div class="collapse show" id="collapseWeather" style="top:8 rem">
+            <div class="card pb-2" >
+                <div class="card-title">
+                    <h4 class="fst-italic text-center pt-2" style="font-family: Playfair Display, font-style: italic !important">
+                        Current Weather
+                    </h4>
+                    <hr>
+                </div>
+                <div class="card-body text-center">
+                    {% if user.fav_city == None %}
+                        <h5 class="card-title bold">No City Selected</h5>
+                    {% else %}
+                        <div> {{user.fav_city}} </div>
+                        <div>
+                            <img src="http://openweathermap.org/img/w/{{weather.icon}}.png" alt="Weather Icon" style="width:100px;height:100px">
+                        </div>
+                        <div>
+                            {{weather.temperature}}° F
+                        </div>
+                        
+                    {% endif %}
+                </div>
+                <button class="btn btn-primary mx-auto" data-toggle="modal" data-target="#reg-modal"> 
+                    Select City
+                </button>
+            </div>
+                
+        </div>
+    </div>
+</div>
+
+<!-- modal for selecting city -->
+<div class="modal fade" id="reg-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title"> Select City</h5>
+                <button class="btn-close" type="button" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-wrap" style="gap: 12px;">
+                    {% for city in cities%} 
+                    <form action="{{ url_for('favorite', city=city['name']) }}" method="POST">
+                        <input type="submit" value= "{{ city['name'] }}"
+                            class="btn btn-primary"
+                            onclick="return confirm('Is this the city that you want to know the weather of?')">
+                    </form>
+                    {% endfor %}
+                </div>
+                <hr>
+                <h5> Or enter a city that you wish to see </h5>
+                <form method="post">
+                    <div class="form-group">
+                        <input type="text" name="request_city"
+                                placeholder="Enter your city" class="form-control"
+                                value="{{ request.form['request_city'] }}"></input>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class = "btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

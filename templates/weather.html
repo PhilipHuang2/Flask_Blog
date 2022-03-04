@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{% block title %} Find the weather in your city {% endblock %}</h1>
+
+<form method="post">
+    <div class="form-group">
+        <input type="text" name="request_city"
+                placeholder="Enter your city" class="form-control"
+                value="{{ request.form['request_city'] }}"></input>
+    </div>
+    <div class="form-group">
+        <button type="submit" class = "btn btn-primary">Submit</button>
+    </div>
+</form>
+
+{% for weather in weather_data %}
+    <div class="container text-center">
+        <div class="row no-gutters">
+            <div class="col">
+                <img class=" float-right mb-4" src="http://openweathermap.org/img/w/{{weather.icon}}.png" alt="Image" style="width:100px;height:100px">
+            </div>
+            <div class="col text-left pl-2 align-middle">
+                <h4>
+                    {{weather.city}}               
+                </h4>
+                <div>
+                    {{weather.temperature}}° F
+                </div>
+                <div>
+                    {{ weather.description}}
+                    <a href="{{ url_for('weather_delete',city=weather.city) }}">
+                        <button type="button" class="close" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </a>
+                    
+                </div>
+            </div>
+            
+        </div>  
+    </div>
+    
+{% endfor %}
+{% endblock %}
