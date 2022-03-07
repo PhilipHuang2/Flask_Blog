@@ -27,11 +27,14 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 db = SQLAlchemy(app)
 
+class UsersView(ModelView):
+    column_display_pk = False
+    column_hide_backref = False
+    column_list = ( 'name', 'password', 'salt', 'fav_city')
 
 
 
-
-
+#TODO doesn't display fav_city but does display city relationship
 class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
@@ -54,7 +57,6 @@ class Posts(db.Model):
     def __repr__(self):
         return '<Title %s, Content %s>' % (self.title, self.content)
 
-#TODO flask-admin doesn't play nice with Cities not having id being the primary key
 class Cities(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable =False, unique=True)
@@ -64,7 +66,7 @@ class Cities(db.Model):
 
 
 admin = Admin(app, name='microblog', template_mode='bootstrap3')
-admin.add_view(ModelView(Users, db.session))
+admin.add_view(UsersView(Users, db.session))
 admin.add_view(ModelView(Posts, db.session))
 admin.add_view(ModelView(Cities, db.session))
 
