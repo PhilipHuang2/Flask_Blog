@@ -56,7 +56,8 @@ class Posts(db.Model):
 
 #TODO flask-admin doesn't play nice with Cities not having id being the primary key
 class Cities(db.Model):
-    name = db.Column(db.String, nullable =False, unique=True, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable =False, unique=True)
 
     def __repr__(self):
         return '<Name %s' % self.name
