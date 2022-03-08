@@ -96,7 +96,7 @@ def create():
         content  = request.form['content']
 
         if not title:
-            flash('Title is required')
+            flash('Title is required', 'danger')
         else:
             post = Posts(title=title,content=content)
             db.session.add(post)
@@ -113,7 +113,7 @@ def edit(id):
         content = request.form['content']
 
         if not title:
-            flash('Title is required')
+            flash('Title is required', 'danger')
         else:
             post.title = title
             post.content = content
@@ -127,7 +127,7 @@ def delete(id):
     post = Posts.query.filter_by(id=id).first()
     db.session.delete(post)
     db.session.commit()
-    flash('"{}" was successfully deleted!'.format(post.title))
+    flash('"{}" was successfully deleted!'.format(post.title),'success')
     return redirect(url_for('index'))
 
 
@@ -158,11 +158,11 @@ def weather_post():
                 db.session.add(city)
                 db.session.commit()
             else:
-                flash('City does not exist')
+                flash('City does not exist', 'danger')
         else:
-            flash('City already exists in database')
+            flash('City already exists in database', 'danger')
     else:
-        flash('City is required')
+        flash('City is required', 'danger')
 
     return redirect(url_for('weather'))
 
@@ -171,7 +171,7 @@ def weather_delete(city):
     deleted_city = Cities.query.filter_by(name=city).first()
     db.session.delete(deleted_city)
     db.session.commit()
-    flash(city + " is deleted")
+    flash(city + " is deleted", 'success')
     return redirect(url_for('weather'))
 
 @app.route('/signin', methods=('POST','GET'))
@@ -186,12 +186,12 @@ def signin():
                 print(session)
                 test = login_user(user)
                 print(session)
-                flash("Logged in Successfully")
+                flash("Logged in Successfully", 'success')
                 return redirect(url_for('index'))
             else:
-                flash("Incorrect Password")
+                flash("Incorrect Password", 'danger')
         else:
-            flash('User not found')
+            flash('User not found', 'danger')
     return render_template('signin.html')
 
 @app.route('/createAccount', methods=('POST', 'GET'))
@@ -202,7 +202,7 @@ def createAccount():
         password = hasher.saltAndPepper(password)
         existing_account = Users.query.filter_by(name=name).first()
         if existing_account:
-            flash("User already exists")
+            flash("User already exists", 'danger')
             return render_template('createAccount.html')
         else:
             new_user = Users(name=name,password=password[0],salt=password[1])
@@ -225,11 +225,11 @@ def profile():
                     db.session.add(city)
                     db.session.commit()
                 else:
-                    flash('City does not exist')
+                    flash('City does not exist', 'danger')
             else:
-                flash('City already exists in database')
+                flash('City already exists in database', 'danger')
         else:
-            flash('City is required')
+            flash('City is required', 'danger')
             return redirect(url_for('profile'))
     p = load_user(session['_user_id'])
     print(p)
@@ -251,7 +251,7 @@ def profile():
 @login_required
 def logout():
     logout_user()
-    flash("Logged out successfully")
+    flash("Logged out successfully", 'success')
     return redirect(url_for('index'))
     
 @app.route('/favorite/<string:city>', methods=('POST',))
